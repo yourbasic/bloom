@@ -8,8 +8,8 @@ func TestFilter(t *testing.T) {
 	s1 := "asöldkgjaösldkgaösldkasldgjkaösldkgjöasgkdjg"
 	s2 := "elasödlnkgaölsdkfgaölsdkjfaölsdkgaölskgnaösl"
 	s3 := "aölsdgkaösldkgaösldkgjaölsdkjgaölsdkgjaösldk"
-	for n := 0; n < 10; n++ {
-		for p := 1; p <= 32; p *= 2 {
+	for n := 0; n < 100; n++ {
+		for p := 1; p <= 128; p *= 2 {
 			filter := New(n, p)
 			member := filter.Likely(s1)
 			if member {

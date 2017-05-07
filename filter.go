@@ -9,7 +9,7 @@
 //
 // Implementation
 //
-// A  filter with a false-positives probability of 1/p uses roughly
+// A  full filter with a false-positives probability of 1/p uses roughly
 // 0.26ln(p) bytes per element and performs ⌈1.4ln(p)⌉ bit array lookups
 // per query:
 //
@@ -25,10 +25,10 @@
 //	  512      1.6       9
 //	 1024      1.8      10
 //
-// The code in this package is optimized for speed without sacrificing accuracy.
+// This implementation is not intended for cryptographic use.
 // Each membership query makes a single call to a 128-bit MurmurHash3 function.
-// This optimization does not increase the false-positives probability
-// as shown by Kirsch and Mitzenmacher.
+// This saves on hashing without increasing the false-positives
+// probability as shown by Kirsch and Mitzenmacher.
 //
 package bloom
 
@@ -43,14 +43,14 @@ const (
 
 // Filter represents a Bloom filter.
 type Filter struct {
-	data    []uint64 // Bit array, the number of words is a power of 2.
+	data    []uint64 // Bit array, the length is a power of 2.
 	lookups int      // Lookups per query
 	count   int64    // Estimated number of unique elements
 }
 
 var murmur = new(digest)
 
-// New creates a new Bloom filter with room for at most n elements,
+// New creates an empty Bloom filter with room for n elements,
 // and a false-positives probability less than 1/p.
 func New(n int, p int) *Filter {
 	f := &Filter{}

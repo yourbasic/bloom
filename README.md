@@ -21,7 +21,7 @@ There is an online reference for the package at
 ### Roadmap
 
 * The API of this library is not yet frozen.
-* The version numbers adhere to [semantic versioning][sv].
+* Version numbers will adhere to [semantic versioning][sv].
 
 ### Thanks
 

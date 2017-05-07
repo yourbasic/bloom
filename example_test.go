@@ -50,3 +50,30 @@ func Example_falsePositives() {
 	fmt.Println(count, "mistakes were made.")
 	// Output: 1 mistakes were made.
 }
+
+// Compute the intersection and union of two filters.
+func ExampleFilter_And() {
+	// Create two Bloom filter with room for n elements
+	// at a false-positives rate less than 1/p.
+	n := 1000
+	p := 100
+	f1, f2 := bloom.New(n, p), bloom.New(n, p)
+
+	// Add "0", "1", …, "499" to f1
+	for i := 0; i < n/2; i++ {
+		f1.Add(strconv.Itoa(i))
+	}
+
+	// Add "250", "251", …, "749" to f2
+	for i := n / 4; i < 3*n/4; i++ {
+		f2.Add(strconv.Itoa(i))
+	}
+
+	// Compute the approximate size of f1 ∩ f2 and f1 ∪ f2.
+	fmt.Println("f1 ∩ f2:", f1.And(f2).Count())
+	fmt.Println("f1 ∪ f2:", f1.Or(f2).Count())
+	// Output:
+	// f1 ∩ f2: 276
+	// f1 ∪ f2: 758
+
+}

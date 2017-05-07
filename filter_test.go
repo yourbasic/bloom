@@ -58,13 +58,54 @@ func TestFilter(t *testing.T) {
 	}
 }
 
+func TestAndOr(t *testing.T) {
+	s1 := "asöldkgjaösldkgaösldkasldgjkaösldkgjöasgkdjg"
+	s2 := "elasödlnkgaölsdkfgaölsdkjfaölsdkgaölskgnaösl"
+	s3 := "aölsdgkaösldkgaösldkgjaölsdkjgaölsdkgjaösldk"
+	for n := 0; n < 100; n++ {
+		for p := 1; p <= 128; p *= 2 {
+			f1, f2 := New(n, p), New(n, p)
+			f1.Add(s1)
+			f1.Add(s2)
+			f2.Add(s2)
+			f2.Add(s3)
+			and, or := f1.And(f2), f1.Or(f2)
+			member := and.Test(s1)
+			if member {
+				t.Errorf("and.Test(s1) = %v; want false\n", member)
+			}
+			member = and.Test(s2)
+			if !member {
+				t.Errorf("and.Test(s2) = %v; want true\n", member)
+			}
+			member = and.Test(s3)
+			if member {
+				t.Errorf("and.Test(s3) = %v; want false\n", member)
+			}
+			member = or.Test(s1)
+			if !member {
+				t.Errorf("or.Test(s1) = %v; want true\n", member)
+			}
+			member = or.Test(s2)
+			if !member {
+				t.Errorf("or.Test(s2) = %v; want true\n", member)
+			}
+			member = or.Test(s3)
+			if !member {
+				t.Errorf("or.Test(s3) = %v; want true\n", member)
+			}
+		}
+	}
+}
+
+var fox string = "The quick brown fox jumps over the lazy dog."
+
 func BenchmarkAdd(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := "The quick brown fox jumps over the lazy dog."
 	for i := 0; i < b.N; i++ {
-		filter.Add(s)
+		filter.Add(fox)
 	}
 }
 
@@ -72,9 +113,9 @@ func BenchmarkAddByte(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := []byte("The quick brown fox jumps over the lazy dog.")
+	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.AddByte(s)
+		filter.AddByte(bytes)
 	}
 }
 
@@ -83,7 +124,7 @@ func BenchmarkTest(b *testing.B) {
 	filter := New(1<<30, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		filter.Test("The quick brown fox jumps over the lazy dog.")
+		filter.Test(fox)
 	}
 }
 
@@ -91,8 +132,19 @@ func BenchmarkTestByte(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := []byte("The quick brown fox jumps over the lazy dog.")
+	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.TestByte(s)
+		filter.TestByte(bytes)
+	}
+}
+
+func BenchmarkTestAnd(b *testing.B) {
+	n := 1000
+	b.StopTimer()
+	f1 := New(n, 200)
+	f2 := New(n, 200)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		_ = f1.And(f2)
 	}
 }

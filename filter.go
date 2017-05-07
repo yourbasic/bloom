@@ -117,7 +117,80 @@ func (f *Filter) Test(s string) bool {
 	return f.TestByte(b)
 }
 
-// Count returns an estimate of the number of unique elements added to this filter.
+// Count returns an estimate of the number of unique elements in this filter.
 func (f *Filter) Count() int64 {
 	return f.count
+}
+
+// And returns a new Bloom filter that consists of all elements
+// that belong to both f1 and f2. It requires two filters with
+// the same size and the same false-positives rate.
+//
+// The false-positive rate of the resulting filter is at most
+// the false-positive rate of f1 and f2, but may be larger than
+// the rate of the filter created from scratch using the intersection
+// of the two sets.
+func (f1 *Filter) And(f2 *Filter) *Filter {
+	if len(f1.data) != len(f2.data) || f1.lookups != f2.lookups {
+		panic("operation requires filters of the same type")
+	}
+	len := len(f1.data)
+	res := &Filter{
+		data:    make([]uint64, len),
+		lookups: f1.lookups,
+	}
+	bitCount := 0
+	for i := 0; i < len; i++ {
+		w := f1.data[i] & f2.data[i]
+		res.data[i] = w
+		bitCount += count(w)
+	}
+	// Estimate the number of elements from the bitCount.
+	m := 64 * float64(len)
+	bits := float64(bitCount)
+	n := m / float64(f1.lookups) * math.Log(m/(m-bits))
+	res.count = int64(n)
+	return res
+}
+
+// Or returns a new Bloom filter that consists of all elements
+// that belong to either f1 or f2. It requires two filters with
+// the same size and the same false-positives rate.
+//
+// The resulting filter is the same as the filter created from scratch
+// using the union of the two sets.
+func (f1 *Filter) Or(f2 *Filter) *Filter {
+	if len(f1.data) != len(f2.data) || f1.lookups != f2.lookups {
+		panic("operation requires filters of the same type")
+	}
+	len := len(f1.data)
+	res := &Filter{
+		data:    make([]uint64, len),
+		lookups: f1.lookups,
+	}
+	bitCount := 0
+	for i := 0; i < len; i++ {
+		w := f1.data[i] | f2.data[i]
+		res.data[i] = w
+		bitCount += count(w)
+	}
+	// Estimate the number of elements from the bitCount.
+	m := 64 * float64(len)
+	n := m / float64(f1.lookups) * math.Log(m/(m-float64(bitCount)))
+	res.count = int64(n)
+	return res
+}
+
+// count returns the number of nonzero bits in w.
+func count(w uint64) int {
+	// Adapted from github.com/yourbasic/bit/funcs.go.
+	const maxw = 1<<64 - 1
+	const bpw = 64
+	w -= (w >> 1) & (maxw / 3)
+	w = w&(maxw/15*3) + (w>>2)&(maxw/15*3)
+	w += w >> 4
+	w &= maxw / 255 * 15
+	w *= maxw / 255
+	w >>= (bpw/8 - 1) * 8
+	return int(w)
 }

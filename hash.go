@@ -1,7 +1,7 @@
 package bloom
 
 import (
-	"encoding/binary"
+	"unsafe"
 )
 
 // MurmurHash3 implementation adapted from Sébastien Paolacci
@@ -31,11 +31,12 @@ func (d *digest) bmix(p []byte) (tail []byte) {
 	h1, h2 := d.h1, d.h2
 	nblocks := len(p) / 16
 	for i := 0; i < nblocks; i++ {
-		//t := (*[2]uint64)(unsafe.Pointer(&p[i*16]))
-		//k1, k2 := t[0], t[1]
-		j := 16 * i
-		k1 := binary.LittleEndian.Uint64(p[j : j+8])
-		k2 := binary.LittleEndian.Uint64(p[j+8 : j+16])
+		t := (*[2]uint64)(unsafe.Pointer(&p[i*16]))
+		k1, k2 := t[0], t[1]
+		// Without unsafe:
+		// j := 16 * i
+		// k1 := binary.LittleEndian.Uint64(p[j : j+8])
+		// k2 := binary.LittleEndian.Uint64(p[j+8 : j+16])
 		k1 *= c1
 		k1 = (k1 << 31) | (k1 >> 33)
 		k1 *= c2

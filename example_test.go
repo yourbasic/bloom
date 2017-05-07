@@ -28,33 +28,33 @@ func Example_basics() {
 
 // Count the number of false positives.
 func Example_falsePositives() {
-	// Create a Bloom filter with room for n elements
-	// at a false-positives rate less than 1/p.
-	n := 1000
+	// Create a Bloom filter with room for 10000 elements
+	// at a false-positives rate less than 1/100.
+	n := 10000
 	p := 100
 	filter := bloom.New(n, p)
 
 	// Add n random strings.
 	for i := 0; i < n; i++ {
-		filter.Add(strconv.FormatUint(rand.Uint64(), 10))
+		filter.Add(strconv.Itoa(rand.Int()))
 	}
 
 	// Do n random lookups and count the (mostly accidental) hits.
 	// It shouldn't be much more than n/p, and hopefully less.
 	count := 0
 	for i := 0; i < n; i++ {
-		if filter.Test(strconv.FormatUint(rand.Uint64(), 10)) {
+		if filter.Test(strconv.Itoa(rand.Int())) {
 			count++
 		}
 	}
 	fmt.Println(count, "mistakes were made.")
-	// Output: 1 mistakes were made.
+	// Output: 26 mistakes were made.
 }
 
 // Compute the intersection and union of two filters.
 func ExampleFilter_And() {
-	// Create two Bloom filter with room for n elements
-	// at a false-positives rate less than 1/p.
+	// Create two Bloom filter with room for 1000 elements
+	// at a false-positives rate less than 1/100.
 	n := 1000
 	p := 100
 	f1, f2 := bloom.New(n, p), bloom.New(n, p)

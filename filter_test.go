@@ -57,3 +57,10 @@ func TestFilter(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkAdd(b *testing.B) {
+	filter := New(10000, 200)
+	for i := 0; i < b.N; i++ {
+		filter.Add("The quick brown fox jumps over the lazy dog.")
+	}
+}

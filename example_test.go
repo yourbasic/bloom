@@ -11,7 +11,7 @@ func Example() {
 	// at a false-positives rate less than 0.5 percent.
 	blacklist := bloom.New(10000, 200)
 
-	// Add a string to the filter.
+	// Add an element to the filter.
 	url := "https://rascal.com"
 	blacklist.Add(url)
 

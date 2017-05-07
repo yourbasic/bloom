@@ -3,19 +3,19 @@
 // Bloom filters
 //
 // A Bloom filter is a space-efficient probabilistic data structure
-// used to test set membership. A member query returns either
-// ”likely in set” or ”definitely not in set”. Only false positives
-// may occur: an element that has been added to the filter
-// will be identified as ”likely in set”.
+// used to test set membership. A member test returns either
+// ”likely member” or ”definitely not a member”. Only false positives
+// can occur: an element that has been added to the filter
+// will be identified as ”likely member”.
 //
-// Elements can be added, but not removed. With more elements in the set,
+// Elements can be added, but not removed. With more elements in the filter,
 // the probability of false positives increases.
 //
 // Implementation
 //
 // A  full filter with a false-positives rate of 1/p uses roughly
 // 0.26ln(p) bytes per element and performs ⌈1.4ln(p)⌉ bit array lookups
-// per query:
+// per test:
 //
 //	    p     bytes   lookups
 //	-------------------------
@@ -30,7 +30,7 @@
 //	 1024      1.8      10
 //
 // This implementation is not intended for cryptographic use.
-// Each membership query makes a single call to a 128-bit MurmurHash3 function.
+// Each membership test makes a single call to a 128-bit MurmurHash3 function.
 // This saves on hashing without increasing the false-positives
 // probability as shown by Kirsch and Mitzenmacher.
 //
@@ -95,8 +95,8 @@ func (f *Filter) Add(s string) bool {
 	return f.AddByte(b)
 }
 
-// LikelyByte tells if b is a likely member of this filter.
-func (f *Filter) LikelyByte(b []byte) bool {
+// TestByte tells if b is a likely member of this filter.
+func (f *Filter) TestByte(b []byte) bool {
 	h1, h2 := murmur.hash(b)
 	trunc := uint64(len(f.data))<<shift - 1
 	for i := f.lookups; i > 0; i-- {
@@ -110,11 +110,11 @@ func (f *Filter) LikelyByte(b []byte) bool {
 	return true
 }
 
-// Likely tells if s is a likely member of this filter.
-func (f *Filter) Likely(s string) bool {
+// Test tells if s is a likely member of this filter.
+func (f *Filter) Test(s string) bool {
 	b := make([]byte, len(s))
 	copy(b, s)
-	return f.LikelyByte(b)
+	return f.TestByte(b)
 }
 
 // Count returns an estimate of the number of unique elements added to this filter.

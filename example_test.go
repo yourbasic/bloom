@@ -15,8 +15,8 @@ func Example() {
 	url := "https://rascal.com"
 	blacklist.Add(url)
 
-	// Check for membership.
-	if blacklist.Likely(url) {
+	// Test for membership.
+	if blacklist.Test(url) {
 		fmt.Println(url, "seems to be shady.")
 	} else {
 		fmt.Println(url, "has not yet been added to our blacklist.")

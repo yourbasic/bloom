@@ -59,8 +59,19 @@ func TestFilter(t *testing.T) {
 }
 
 func BenchmarkAdd(b *testing.B) {
-	filter := New(10000, 200)
+	b.StopTimer()
+	filter := New(1<<30, 200)
+	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		filter.Add("The quick brown fox jumps over the lazy dog.")
+	}
+}
+
+func BenchmarkLikely(b *testing.B) {
+	b.StopTimer()
+	filter := New(1<<30, 200)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		filter.Likely("The quick brown fox jumps over the lazy dog.")
 	}
 }

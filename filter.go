@@ -4,9 +4,12 @@
 //
 // A Bloom filter is a space-efficient probabilistic data structure
 // used to test set membership. A member query returns either
-// ”likely in set” or ”definitely not in set”. Elements can be added,
-// but not removed. With more elements in the set, the probability of
-// false positives increases.
+// ”likely in set” or ”definitely not in set”. Only false positives
+// may occur: an element that has been added to the filter
+// will be identified as ”likely in set”.
+//
+// Elements can be added, but not removed. With more elements in the set,
+// the probability of false positives increases.
 //
 // Implementation
 //

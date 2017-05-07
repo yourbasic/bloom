@@ -17,7 +17,9 @@ func Example() {
 
 	// Check for membership.
 	if blacklist.Likely(url) {
-		fmt.Println(url, "seems to be shady")
+		fmt.Println(url, "seems to be shady.")
+	} else {
+		fmt.Println(url, "has not yet been added to our blacklist.")
 	}
-	// Output: https://rascal.com seems to be shady
+	// Output: https://rascal.com seems to be shady.
 }

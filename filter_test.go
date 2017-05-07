@@ -62,8 +62,19 @@ func BenchmarkAdd(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
+	s := "The quick brown fox jumps over the lazy dog."
 	for i := 0; i < b.N; i++ {
-		filter.Add("The quick brown fox jumps over the lazy dog.")
+		filter.Add(s)
+	}
+}
+
+func BenchmarkAddByte(b *testing.B) {
+	b.StopTimer()
+	filter := New(1<<30, 200)
+	b.StartTimer()
+	s := []byte("The quick brown fox jumps over the lazy dog.")
+	for i := 0; i < b.N; i++ {
+		filter.AddByte(s)
 	}
 }
 
@@ -73,5 +84,15 @@ func BenchmarkLikely(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		filter.Likely("The quick brown fox jumps over the lazy dog.")
+	}
+}
+
+func BenchmarkLikelyByte(b *testing.B) {
+	b.StopTimer()
+	filter := New(1<<30, 200)
+	b.StartTimer()
+	s := []byte("The quick brown fox jumps over the lazy dog.")
+	for i := 0; i < b.N; i++ {
+		filter.LikelyByte(s)
 	}
 }

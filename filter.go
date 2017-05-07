@@ -73,7 +73,8 @@ func (f *Filter) AddByte(b []byte) bool {
 	h1, h2 := murmur.hash(b)
 	trunc := uint64(len(f.data))<<shift - 1
 	member := true
-	for i := f.lookups; i > 0; i, h1 = i-1, h1+h2 {
+	for i := f.lookups; i > 0; i-- {
+		h1 += h2
 		n := h1 & trunc
 		k, b := n>>shift, uint64(1<<uint(n&mask))
 		if f.data[k]&b == 0 {
@@ -89,14 +90,17 @@ func (f *Filter) AddByte(b []byte) bool {
 
 // Add adds s to the filter and tells if s was already a likely member.
 func (f *Filter) Add(s string) bool {
-	return f.AddByte([]byte(s))
+	b := make([]byte, len(s))
+	copy(b, s)
+	return f.AddByte(b)
 }
 
 // LikelyByte tells if b is a likely member of this filter.
 func (f *Filter) LikelyByte(b []byte) bool {
 	h1, h2 := murmur.hash(b)
 	trunc := uint64(len(f.data))<<shift - 1
-	for i := f.lookups; i > 0; i, h1 = i-1, h1+h2 {
+	for i := f.lookups; i > 0; i-- {
+		h1 += h2
 		n := h1 & trunc
 		k, b := n>>shift, uint64(1<<uint(n&mask))
 		if f.data[k]&b == 0 {
@@ -108,7 +112,9 @@ func (f *Filter) LikelyByte(b []byte) bool {
 
 // Likely tells if s is a likely member of this filter.
 func (f *Filter) Likely(s string) bool {
-	return f.LikelyByte([]byte(s))
+	b := make([]byte, len(s))
+	copy(b, s)
+	return f.LikelyByte(b)
 }
 
 // Count returns an estimate of the number of unique elements added to this filter.

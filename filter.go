@@ -3,13 +3,14 @@
 // Bloom filters
 //
 // A Bloom filter is a space-efficient probabilistic data structure
-// used to test set membership. A query returns either ”possibly in set”
-// or ”definitely not in set”. Elements can be added, but not removed.
-// With more elements in the set, the probability of false positives increases.
+// used to test set membership. A member query returns either
+// ”likely in set” or ”definitely not in set”. Elements can be added,
+// but not removed. With more elements in the set, the probability of
+// false positives increases.
 //
 // Implementation
 //
-// A  full filter with a false-positives probability of 1/p uses roughly
+// A  full filter with a false-positives rate of 1/p uses roughly
 // 0.26ln(p) bytes per element and performs ⌈1.4ln(p)⌉ bit array lookups
 // per query:
 //
@@ -50,8 +51,8 @@ type Filter struct {
 
 var murmur = new(digest)
 
-// New creates an empty Bloom filter with room for n elements,
-// and a false-positives probability less than 1/p.
+// New creates an empty Bloom filter with room for n elements
+// at a false-positives rate less than 1/p.
 func New(n int, p int) *Filter {
 	f := &Filter{}
 	minWords := int(0.0325 * math.Log(float64(p)) * float64(n))
@@ -64,7 +65,7 @@ func New(n int, p int) *Filter {
 	return f
 }
 
-// AddByte adds b to the filter and tells if b was already a probable member.
+// AddByte adds b to the filter and tells if b was already a likely member.
 func (f *Filter) AddByte(b []byte) bool {
 	h1, h2 := murmur.hash(b)
 	trunc := uint64(len(f.data))<<shift - 1
@@ -83,12 +84,12 @@ func (f *Filter) AddByte(b []byte) bool {
 	return member
 }
 
-// Add adds s to the filter and tells if s was already a probable member.
+// Add adds s to the filter and tells if s was already a likely member.
 func (f *Filter) Add(s string) bool {
 	return f.AddByte([]byte(s))
 }
 
-// LikelyByte tells if b is a probable member of this filter.
+// LikelyByte tells if b is a likely member of this filter.
 func (f *Filter) LikelyByte(b []byte) bool {
 	h1, h2 := murmur.hash(b)
 	trunc := uint64(len(f.data))<<shift - 1
@@ -102,7 +103,7 @@ func (f *Filter) LikelyByte(b []byte) bool {
 	return true
 }
 
-// Likely tells if s is a probable member of this filter.
+// Likely tells if s is a likely member of this filter.
 func (f *Filter) Likely(s string) bool {
 	return f.LikelyByte([]byte(s))
 }

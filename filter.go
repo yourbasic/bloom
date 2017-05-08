@@ -122,43 +122,12 @@ func (f *Filter) Count() int64 {
 	return f.count
 }
 
-// And returns a new Bloom filter that consists of all elements
-// that belong to both f1 and f2. The two filters must be of
-// the same size and have the same false-positives rate.
-//
-// The false-positive rate of the resulting filter is bounded by
-// the maximum false-positive rate of f1 and f2, but it may be larger
-// than the rate of the filter created from scratch using
-// the intersection of the two sets.
-func (f1 *Filter) And(f2 *Filter) *Filter {
-	if len(f1.data) != len(f2.data) || f1.lookups != f2.lookups {
-		panic("operation requires filters of the same type")
-	}
-	len := len(f1.data)
-	res := &Filter{
-		data:    make([]uint64, len),
-		lookups: f1.lookups,
-	}
-	bitCount := 0
-	for i := 0; i < len; i++ {
-		w := f1.data[i] & f2.data[i]
-		res.data[i] = w
-		bitCount += count(w)
-	}
-	// Estimate the number of elements from the bitCount.
-	m := 64 * float64(len)
-	bits := float64(bitCount)
-	n := m / float64(f1.lookups) * math.Log(m/(m-bits))
-	res.count = int64(n)
-	return res
-}
-
 // Or returns a new Bloom filter that consists of all elements
 // that belong to either f1 or f2. The two filters must be of
-// the same size and have the same false-positives rate.
+// the same size n and have the same false-positives rate p.
 //
-// The resulting filter is the same as the filter created from scratch
-// using the union of the two sets.
+// The resulting filter is the same as the filter created
+// from scratch using the union of the two sets.
 func (f1 *Filter) Or(f2 *Filter) *Filter {
 	if len(f1.data) != len(f2.data) || f1.lookups != f2.lookups {
 		panic("operation requires filters of the same type")

@@ -51,29 +51,25 @@ func Example_falsePositives() {
 	// Output: 26 mistakes were made.
 }
 
-// Compute the intersection and union of two filters.
-func ExampleFilter_And() {
+// Compute the union of two filters.
+func ExampleFilter_Or() {
 	// Create two Bloom filter with room for 1000 elements
 	// at a false-positives rate less than 1/100.
-	n := 1000
-	p := 100
-	f1, f2 := bloom.New(n, p), bloom.New(n, p)
+	n, p := 1000, 100
+	f1 := bloom.New(n, p)
+	f2 := bloom.New(n, p)
 
-	// Add "0", "1", …, "499" to f1
-	for i := 0; i < n/2; i++ {
+	// Add "0", "2", …, "498" to f1
+	for i := 0; i < n/2; i += 2 {
 		f1.Add(strconv.Itoa(i))
 	}
 
-	// Add "250", "251", …, "749" to f2
-	for i := n / 4; i < 3*n/4; i++ {
+	// Add "1", "3", …, "499" to f2
+	for i := 1; i < n/2; i += 2 {
 		f2.Add(strconv.Itoa(i))
 	}
 
-	// Compute the approximate size of f1 ∩ f2 and f1 ∪ f2.
-	fmt.Println("f1 ∩ f2:", f1.And(f2).Count())
+	// Compute the approximate size of f1 ∪ f2.
 	fmt.Println("f1 ∪ f2:", f1.Or(f2).Count())
-	// Output:
-	// f1 ∩ f2: 276
-	// f1 ∪ f2: 758
-
+	// Output: f1 ∪ f2: 505
 }

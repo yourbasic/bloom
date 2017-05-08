@@ -58,7 +58,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestAndOr(t *testing.T) {
+func TestOr(t *testing.T) {
 	s1 := "asöldkgjaösldkgaösldkasldgjkaösldkgjöasgkdjg"
 	s2 := "elasödlnkgaölsdkfgaölsdkjfaölsdkgaölskgnaösl"
 	s3 := "aölsdgkaösldkgaösldkgjaölsdkjgaölsdkgjaösldk"
@@ -69,20 +69,8 @@ func TestAndOr(t *testing.T) {
 			f1.Add(s2)
 			f2.Add(s2)
 			f2.Add(s3)
-			and, or := f1.And(f2), f1.Or(f2)
-			member := and.Test(s1)
-			if member {
-				t.Errorf("and.Test(s1) = %v; want false\n", member)
-			}
-			member = and.Test(s2)
-			if !member {
-				t.Errorf("and.Test(s2) = %v; want true\n", member)
-			}
-			member = and.Test(s3)
-			if member {
-				t.Errorf("and.Test(s3) = %v; want false\n", member)
-			}
-			member = or.Test(s1)
+			or := f1.Or(f2)
+			member := or.Test(s1)
 			if !member {
 				t.Errorf("or.Test(s1) = %v; want true\n", member)
 			}
@@ -138,13 +126,13 @@ func BenchmarkTestByte(b *testing.B) {
 	}
 }
 
-func BenchmarkTestAnd(b *testing.B) {
+func BenchmarkTestOr(b *testing.B) {
 	n := 1000
 	b.StopTimer()
 	f1 := New(n, 200)
 	f2 := New(n, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		_ = f1.And(f2)
+		_ = f1.Or(f2)
 	}
 }

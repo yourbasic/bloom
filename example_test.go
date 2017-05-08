@@ -26,7 +26,7 @@ func Example_basics() {
 	// Output: https://rascal.com seems to be shady.
 }
 
-// Count the number of false positives.
+// Estimate the number of false positives.
 func Example_falsePositives() {
 	// Create a Bloom filter with room for n elements
 	// at a false-positives rate less than 1/p.
@@ -51,8 +51,8 @@ func Example_falsePositives() {
 }
 
 // Compute the union of two filters.
-func ExampleFilter_Or() {
-	// Create two Bloom filter with room for 1000 elements
+func ExampleFilter_Union() {
+	// Create two Bloom filters, each with room for 1000 elements
 	// at a false-positives rate less than 1/100.
 	n, p := 1000, 100
 	f1 := bloom.New(n, p)

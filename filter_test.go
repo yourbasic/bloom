@@ -48,7 +48,7 @@ func TestFilter(t *testing.T) {
 
 			member = filter.Add(s3)
 			if member {
-				t.Errorf("Add(s1) = %v; want false\n", member)
+				t.Errorf("Add(s3) = %v; want false\n", member)
 			}
 			count = filter.Count()
 			if count != 2 {
@@ -72,15 +72,15 @@ func TestUnion(t *testing.T) {
 			or := f1.Union(f2)
 			member := or.Test(s1)
 			if !member {
-				t.Errorf("or.Test(s1) = %v; want true\n", member)
+				t.Errorf("f1.Union(f2).Test(s1) = %v; want true\n", member)
 			}
 			member = or.Test(s2)
 			if !member {
-				t.Errorf("or.Test(s2) = %v; want true\n", member)
+				t.Errorf("f1.Union(f2).Test(s2) = %v; want true\n", member)
 			}
 			member = or.Test(s3)
 			if !member {
-				t.Errorf("or.Test(s3) = %v; want true\n", member)
+				t.Errorf("f1.Union(f2).Test(s3) = %v; want true\n", member)
 			}
 		}
 	}
@@ -93,7 +93,7 @@ func BenchmarkAdd(b *testing.B) {
 	filter := New(1<<30, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		filter.Add(fox)
+		_ = filter.Add(fox)
 	}
 }
 
@@ -103,7 +103,7 @@ func BenchmarkAddByte(b *testing.B) {
 	b.StartTimer()
 	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.AddByte(bytes)
+		_ = filter.AddByte(bytes)
 	}
 }
 
@@ -112,7 +112,7 @@ func BenchmarkTest(b *testing.B) {
 	filter := New(1<<30, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		filter.Test(fox)
+		_ = filter.Test(fox)
 	}
 }
 
@@ -122,7 +122,7 @@ func BenchmarkTestByte(b *testing.B) {
 	b.StartTimer()
 	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.TestByte(bytes)
+		_ = filter.TestByte(bytes)
 	}
 }
 

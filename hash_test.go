@@ -7,9 +7,8 @@ import (
 func TestHash(t *testing.T) {
 	d := new(digest)
 	var data = []struct {
-		h1 uint64
-		h2 uint64
-		s  string
+		h1, h2 uint64
+		s      string
 	}{
 		{0x0000000000000000, 0x0000000000000000, ""},
 		{0xcbd8a7b341bd9b02, 0x5b1e906a48ae1d19, "hello"},
@@ -23,7 +22,7 @@ func TestHash(t *testing.T) {
 			t.Errorf("hash(%q).h1 = %d; want %d\n", x.s, h1, x.h1)
 		}
 		if h2 != x.h2 {
-			t.Errorf("hash(%q).h1 = %d; want %d\n", x.s, h2, x.h2)
+			t.Errorf("hash(%q).h2 = %d; want %d\n", x.s, h2, x.h2)
 		}
 	}
 }

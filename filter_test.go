@@ -48,7 +48,7 @@ func TestFilter(t *testing.T) {
 
 			member = filter.Add(s3)
 			if member {
-				t.Errorf("Add(s1) = %v; want false\n", member)
+				t.Errorf("Add(s3) = %v; want false\n", member)
 			}
 			count = filter.Count()
 			if count != 2 {
@@ -58,13 +58,42 @@ func TestFilter(t *testing.T) {
 	}
 }
 
+func TestUnion(t *testing.T) {
+	s1 := "asöldkgjaösldkgaösldkasldgjkaösldkgjöasgkdjg"
+	s2 := "elasödlnkgaölsdkfgaölsdkjfaölsdkgaölskgnaösl"
+	s3 := "aölsdgkaösldkgaösldkgjaölsdkjgaölsdkgjaösldk"
+	for n := 0; n < 100; n++ {
+		for p := 1; p <= 128; p *= 2 {
+			f1, f2 := New(n, p), New(n, p)
+			f1.Add(s1)
+			f1.Add(s2)
+			f2.Add(s2)
+			f2.Add(s3)
+			or := f1.Union(f2)
+			member := or.Test(s1)
+			if !member {
+				t.Errorf("f1.Union(f2).Test(s1) = %v; want true\n", member)
+			}
+			member = or.Test(s2)
+			if !member {
+				t.Errorf("f1.Union(f2).Test(s2) = %v; want true\n", member)
+			}
+			member = or.Test(s3)
+			if !member {
+				t.Errorf("f1.Union(f2).Test(s3) = %v; want true\n", member)
+			}
+		}
+	}
+}
+
+var fox string = "The quick brown fox jumps over the lazy dog."
+
 func BenchmarkAdd(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := "The quick brown fox jumps over the lazy dog."
 	for i := 0; i < b.N; i++ {
-		filter.Add(s)
+		_ = filter.Add(fox)
 	}
 }
 
@@ -72,9 +101,9 @@ func BenchmarkAddByte(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := []byte("The quick brown fox jumps over the lazy dog.")
+	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.AddByte(s)
+		_ = filter.AddByte(bytes)
 	}
 }
 
@@ -83,7 +112,7 @@ func BenchmarkTest(b *testing.B) {
 	filter := New(1<<30, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		filter.Test("The quick brown fox jumps over the lazy dog.")
+		_ = filter.Test(fox)
 	}
 }
 
@@ -91,8 +120,19 @@ func BenchmarkTestByte(b *testing.B) {
 	b.StopTimer()
 	filter := New(1<<30, 200)
 	b.StartTimer()
-	s := []byte("The quick brown fox jumps over the lazy dog.")
+	bytes := []byte(fox)
 	for i := 0; i < b.N; i++ {
-		filter.TestByte(s)
+		_ = filter.TestByte(bytes)
+	}
+}
+
+func BenchmarkTestUnion(b *testing.B) {
+	n := 1000
+	b.StopTimer()
+	f1 := New(n, 200)
+	f2 := New(n, 200)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		_ = f1.Union(f2)
 	}
 }

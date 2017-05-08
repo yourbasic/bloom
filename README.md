@@ -4,7 +4,7 @@ Golang Bloom filter implementation
 
 ![Neutral density filter](ND-filter.jpg)
 
-*Neutral density filter, image by [Robert Emperley][re], [CC BY-SA 2.0][ccbysa].*
+*Image by [Robert Emperley][re], [CC BY-SA 2.0][ccbysa].*
 
 ### Installation
 

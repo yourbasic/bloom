@@ -58,7 +58,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestOr(t *testing.T) {
+func TestUnion(t *testing.T) {
 	s1 := "asöldkgjaösldkgaösldkasldgjkaösldkgjöasgkdjg"
 	s2 := "elasödlnkgaölsdkfgaölsdkjfaölsdkgaölskgnaösl"
 	s3 := "aölsdgkaösldkgaösldkgjaölsdkjgaölsdkgjaösldk"
@@ -69,7 +69,7 @@ func TestOr(t *testing.T) {
 			f1.Add(s2)
 			f2.Add(s2)
 			f2.Add(s3)
-			or := f1.Or(f2)
+			or := f1.Union(f2)
 			member := or.Test(s1)
 			if !member {
 				t.Errorf("or.Test(s1) = %v; want true\n", member)
@@ -126,13 +126,13 @@ func BenchmarkTestByte(b *testing.B) {
 	}
 }
 
-func BenchmarkTestOr(b *testing.B) {
+func BenchmarkTestUnion(b *testing.B) {
 	n := 1000
 	b.StopTimer()
 	f1 := New(n, 200)
 	f2 := New(n, 200)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		_ = f1.Or(f2)
+		_ = f1.Union(f2)
 	}
 }

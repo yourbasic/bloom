@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// Create and use a Bloom filter.
+// Build a blacklist of shady websites.
 func Example_basics() {
 	// Create a Bloom filter with room for 10000 elements
 	// at a false-positives rate less than 0.5 percent.
@@ -28,10 +28,9 @@ func Example_basics() {
 
 // Count the number of false positives.
 func Example_falsePositives() {
-	// Create a Bloom filter with room for 10000 elements
-	// at a false-positives rate less than 1/100.
-	n := 10000
-	p := 100
+	// Create a Bloom filter with room for n elements
+	// at a false-positives rate less than 1/p.
+	n, p := 10000, 100
 	filter := bloom.New(n, p)
 
 	// Add n random strings.
@@ -70,6 +69,6 @@ func ExampleFilter_Or() {
 	}
 
 	// Compute the approximate size of f1 ∪ f2.
-	fmt.Println("f1 ∪ f2:", f1.Or(f2).Count())
+	fmt.Println("f1 ∪ f2:", f1.Union(f2).Count())
 	// Output: f1 ∪ f2: 505
 }

@@ -122,13 +122,13 @@ func (f *Filter) Count() int64 {
 	return f.count
 }
 
-// Or returns a new Bloom filter that consists of all elements
+// Union returns a new Bloom filter that consists of all elements
 // that belong to either f1 or f2. The two filters must be of
 // the same size n and have the same false-positives rate p.
 //
 // The resulting filter is the same as the filter created
 // from scratch using the union of the two sets.
-func (f1 *Filter) Or(f2 *Filter) *Filter {
+func (f1 *Filter) Union(f2 *Filter) *Filter {
 	if len(f1.data) != len(f2.data) || f1.lookups != f2.lookups {
 		panic("operation requires filters of the same type")
 	}

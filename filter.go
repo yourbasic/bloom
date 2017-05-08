@@ -117,7 +117,7 @@ func (f *Filter) Test(s string) bool {
 	return f.TestByte(b)
 }
 
-// Count returns an estimate of the number of unique elements in this filter.
+// Count returns an estimate of the number of elements in this filter.
 func (f *Filter) Count() int64 {
 	return f.count
 }

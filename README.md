@@ -4,7 +4,7 @@
 
 A Bloom filter is a fast and space-efficient probabilistic data structure
 used to test set membership. A membership test returns either ”likely member”
-or ”definitely not a member”
+or ”definitely not a member”.
 
 ![Neutral density filter](ND-filter.jpg)
 

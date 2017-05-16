@@ -3,37 +3,32 @@ package bloom
 // MurmurHash3 implementation adapted from Sébastien Paolacci
 // github.com/spaolacci/murmur3, released under BSD-3-Clause.
 
-func (d *digest) hash(data []byte) (h1 uint64, h2 uint64) {
+func (d *digestString) hash(data string) (h1 uint64, h2 uint64) {
 	d.h1, d.h2 = 0, 0
 	d.clen = len(data)
-	d.tail = d.bmix(data)
+	d.tail = d.bmixString(data)
 	return d.sum()
 }
 
-const (
-	c1 = 0x87c37b91114253d5
-	c2 = 0x4cf5ad432745937f
-)
-
-type digest struct {
+type digestString struct {
 	clen int
-	tail []byte
+	tail string
 	h1   uint64
 	h2   uint64
 }
 
-func Uint64(b []byte) uint64 {
+func Uint64String(b string) uint64 {
 	return uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
 		uint64(b[4])<<32 | uint64(b[5])<<40 | uint64(b[6])<<48 | uint64(b[7])<<56
 }
 
-func (d *digest) bmix(p []byte) (tail []byte) {
+func (d *digestString) bmixString(p string) (tail string) {
 	h1, h2 := d.h1, d.h2
 	nblocks := len(p) / 16
 	for i := 0; i < nblocks; i++ {
 		j := 16 * i
-		k1 := Uint64(p[j : j+8])
-		k2 := Uint64(p[j+8 : j+16])
+		k1 := Uint64String(p[j : j+8])
+		k2 := Uint64String(p[j+8 : j+16])
 		k1 *= c1
 		k1 = (k1 << 31) | (k1 >> 33)
 		k1 *= c2
@@ -53,7 +48,7 @@ func (d *digest) bmix(p []byte) (tail []byte) {
 	return p[nblocks*16:]
 }
 
-func (d *digest) sum() (h1, h2 uint64) {
+func (d *digestString) sum() (h1, h2 uint64) {
 	h1, h2 = d.h1, d.h2
 	var k1, k2 uint64
 	switch len(d.tail) & 15 {
@@ -119,13 +114,4 @@ func (d *digest) sum() (h1, h2 uint64) {
 	h1 += h2
 	h2 += h1
 	return h1, h2
-}
-
-func fmix(k uint64) uint64 {
-	k ^= k >> 33
-	k *= 0xff51afd7ed558ccd
-	k ^= k >> 33
-	k *= 0xc4ceb9fe1a85ec53
-	k ^= k >> 33
-	return k
 }

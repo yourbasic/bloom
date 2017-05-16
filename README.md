@@ -1,6 +1,10 @@
 # Your basic Bloom filter
 
-Golang Bloom filter implementation
+### Golang probabilistic set data structure
+
+A Bloom filter is a fast and space-efficient probabilistic
+data structure used to test set membership. A membership test
+returns either ”likely member” or ”definitely not a member”.
 
 ![Neutral density filter](ND-filter.jpg)
 
@@ -23,12 +27,14 @@ There is an online reference for the package at
 * The API of this library is frozen.
 * Version numbers adhere to [semantic versioning][sv].
 
-The only accepted reason to modify the API of this package is to handle
-bug fixes that can't be resolved in any other reasonable way.
+The only accepted reason to modify the API of this package
+is to handle issues that can't be resolved in any other
+reasonable way.
 
 ### Thanks
 
-Thanks to [Sébastien Paolacci][sp] for his excellent MurmurHash implementation.
+Thanks to [Sébastien Paolacci][sp] for his excellent
+MurmurHash implementation.
 
 Stefan Nilsson – [korthaj](https://github.com/korthaj)
 

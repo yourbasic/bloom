@@ -54,8 +54,11 @@ type Filter struct {
 	count   int64    // Estimate number of elements
 }
 
-// MurmurHash3 function.
-var murmur = new(digest)
+// MurmurHash3 functions.
+var (
+	murmur       = new(digest)
+	murmurString = new(digestString)
+)
 
 // New creates an empty Bloom filter with room for n elements
 // at a false-positives rate less than 1/p.
@@ -73,7 +76,15 @@ func New(n int, p int) *Filter {
 
 // AddByte adds b to the filter and tells if b was already a likely member.
 func (f *Filter) AddByte(b []byte) bool {
-	h1, h2 := murmur.hash(b)
+	return f.add(murmur.hash(b))
+}
+
+// Add adds s to the filter and tells if s was already a likely member.
+func (f *Filter) Add(s string) bool {
+	return f.add(murmurString.hash(s))
+}
+
+func (f *Filter) add(h1, h2 uint64) bool {
 	trunc := uint64(len(f.data))<<shift - 1
 	member := true
 	for i := f.lookups; i > 0; i-- {
@@ -91,16 +102,17 @@ func (f *Filter) AddByte(b []byte) bool {
 	return member
 }
 
-// Add adds s to the filter and tells if s was already a likely member.
-func (f *Filter) Add(s string) bool {
-	b := make([]byte, len(s))
-	copy(b, s)
-	return f.AddByte(b)
-}
-
 // TestByte tells if b is a likely member of the filter.
 func (f *Filter) TestByte(b []byte) bool {
-	h1, h2 := murmur.hash(b)
+	return f.test(murmur.hash(b))
+}
+
+// Test tells if s is a likely member of the filter.
+func (f *Filter) Test(s string) bool {
+	return f.test(murmurString.hash(s))
+}
+
+func (f *Filter) test(h1, h2 uint64) bool {
 	trunc := uint64(len(f.data))<<shift - 1
 	for i := f.lookups; i > 0; i-- {
 		h1 += h2
@@ -111,13 +123,6 @@ func (f *Filter) TestByte(b []byte) bool {
 		}
 	}
 	return true
-}
-
-// Test tells if s is a likely member of the filter.
-func (f *Filter) Test(s string) bool {
-	b := make([]byte, len(s))
-	copy(b, s)
-	return f.TestByte(b)
 }
 
 // Count returns an estimate of the number of elements in the filter.

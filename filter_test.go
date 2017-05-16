@@ -126,7 +126,7 @@ func BenchmarkTestByte(b *testing.B) {
 	}
 }
 
-func BenchmarkTestUnion(b *testing.B) {
+func BenchmarkUnion(b *testing.B) {
 	n := 1000
 	b.StopTimer()
 	f1 := New(n, 200)

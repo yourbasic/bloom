@@ -22,7 +22,7 @@ type digest struct {
 	h2   uint64
 }
 
-func Uint64(b []byte) uint64 {
+func uint64byte(b []byte) uint64 {
 	return uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
 		uint64(b[4])<<32 | uint64(b[5])<<40 | uint64(b[6])<<48 | uint64(b[7])<<56
 }
@@ -32,8 +32,8 @@ func (d *digest) bmix(p []byte) (tail []byte) {
 	nblocks := len(p) / 16
 	for i := 0; i < nblocks; i++ {
 		j := 16 * i
-		k1 := Uint64(p[j : j+8])
-		k2 := Uint64(p[j+8 : j+16])
+		k1 := uint64byte(p[j : j+8])
+		k2 := uint64byte(p[j+8 : j+16])
 		k1 *= c1
 		k1 = (k1 << 31) | (k1 >> 33)
 		k1 *= c2

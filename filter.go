@@ -32,7 +32,7 @@
 //	 1024      1.8      10
 //
 // This implementation is not intended for cryptographic use.
-// Each membership test makes a single call to a 128-bit MurmurHash3 function.
+// Each membership test makes a single call to a 128-bit hash function.
 // This improves speed without increasing the false-positives rate
 // as shown by Kirsch and Mitzenmacher.
 //

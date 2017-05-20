@@ -54,12 +54,6 @@ type Filter struct {
 	count   int64    // Estimate number of elements
 }
 
-// MurmurHash3 functions.
-var (
-	murmur       = new(digest)
-	murmurString = new(digestString)
-)
-
 // New creates an empty Bloom filter with room for n elements
 // at a false-positives rate less than 1/p.
 func New(n int, p int) *Filter {
@@ -76,12 +70,12 @@ func New(n int, p int) *Filter {
 
 // AddByte adds b to the filter and tells if b was already a likely member.
 func (f *Filter) AddByte(b []byte) bool {
-	return f.add(murmur.hash(b))
+	return f.add(hash(b))
 }
 
 // Add adds s to the filter and tells if s was already a likely member.
 func (f *Filter) Add(s string) bool {
-	return f.add(murmurString.hash(s))
+	return f.add(hashString(s))
 }
 
 func (f *Filter) add(h1, h2 uint64) bool {
@@ -104,12 +98,12 @@ func (f *Filter) add(h1, h2 uint64) bool {
 
 // TestByte tells if b is a likely member of the filter.
 func (f *Filter) TestByte(b []byte) bool {
-	return f.test(murmur.hash(b))
+	return f.test(hash(b))
 }
 
 // Test tells if s is a likely member of the filter.
 func (f *Filter) Test(s string) bool {
-	return f.test(murmurString.hash(s))
+	return f.test(hashString(s))
 }
 
 func (f *Filter) test(h1, h2 uint64) bool {

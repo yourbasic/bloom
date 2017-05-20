@@ -5,7 +5,6 @@ import (
 )
 
 func TestHash(t *testing.T) {
-	d := new(digest)
 	var data = []struct {
 		h1, h2 uint64
 		s      string
@@ -17,7 +16,7 @@ func TestHash(t *testing.T) {
 		{0xcd99481f9ee902c9, 0x695da1a38987b6e7, "The quick brown fox jumps over the lazy dog."},
 	}
 	for _, x := range data {
-		h1, h2 := d.hash([]byte(x.s))
+		h1, h2 := hash([]byte(x.s))
 		if h1 != x.h1 {
 			t.Errorf("hash(%q).h1 = %d; want %d\n", x.s, h1, x.h1)
 		}
@@ -28,7 +27,6 @@ func TestHash(t *testing.T) {
 }
 
 func TestHashString(t *testing.T) {
-	d := new(digestString)
 	var data = []struct {
 		h1, h2 uint64
 		s      string
@@ -40,12 +38,12 @@ func TestHashString(t *testing.T) {
 		{0xcd99481f9ee902c9, 0x695da1a38987b6e7, "The quick brown fox jumps over the lazy dog."},
 	}
 	for _, x := range data {
-		h1, h2 := d.hash(x.s)
+		h1, h2 := hashString(x.s)
 		if h1 != x.h1 {
-			t.Errorf("hash(%q).h1 = %d; want %d\n", x.s, h1, x.h1)
+			t.Errorf("hashString(%q).h1 = %d; want %d\n", x.s, h1, x.h1)
 		}
 		if h2 != x.h2 {
-			t.Errorf("hash(%q).h2 = %d; want %d\n", x.s, h2, x.h2)
+			t.Errorf("hashString(%q).h2 = %d; want %d\n", x.s, h2, x.h2)
 		}
 	}
 }

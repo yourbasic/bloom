@@ -1,8 +1,11 @@
 package bloom_test
 
 import (
+	"bytes"
+	"encoding/gob"
 	"fmt"
 	"github.com/yourbasic/bloom"
+	"log"
 	"math/rand"
 	"strconv"
 )
@@ -71,4 +74,31 @@ func ExampleFilter_Union() {
 	// Compute the approximate size of f1 ∪ f2.
 	fmt.Println("f1 ∪ f2:", f1.Union(f2).Count())
 	// Output: f1 ∪ f2: 505
+}
+
+// Send a filter over a network using the encoding/gob package.
+func ExampleFilter_MarshalBinary_network() {
+	// Create a mock network and a new Filter.
+	var network bytes.Buffer
+	f1 := bloom.New(1000, 100)
+	f1.Add("Hello, filter!")
+
+	// Create an encoder and send the filter to the network.
+	enc := gob.NewEncoder(&network)
+	if err := enc.Encode(f1); err != nil {
+		log.Fatal("encode error:", err)
+	}
+
+	// Create a decoder and receive the filter from the network.
+	dec := gob.NewDecoder(&network)
+	var f2 bloom.Filter
+	if err := dec.Decode(&f2); err != nil {
+		log.Fatal("decode error:", err)
+	}
+
+	// Check that we got the same filter back.
+	if f2.Test("Hello, filter!") {
+		fmt.Println("Filter arrived safely.")
+	}
+	// Output: Filter arrived safely.
 }

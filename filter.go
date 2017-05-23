@@ -5,10 +5,9 @@
 // A Bloom filter is a fast and space-efficient probabilistic data structure
 // used to test set membership.
 //
-// A membership test returns either
-// ”likely member” or ”definitely not a member”. Only false positives
-// can occur: an element that has been added to the filter
-// will be identified as ”likely member”.
+// A membership test returns either ”likely member” or ”definitely not
+// a member”. Only false positives can occur: an element that has been added
+// to the filter will always be identified as ”likely member”.
 //
 // Elements can be added, but not removed. With more elements in the filter,
 // the probability of false positives increases.
@@ -97,11 +96,13 @@ func (f *Filter) add(h1, h2 uint64) bool {
 }
 
 // TestByte tells if b is a likely member of the filter.
+// If true, b is probably a member; if false, b is definitely not a member.
 func (f *Filter) TestByte(b []byte) bool {
 	return f.test(hash(b))
 }
 
 // Test tells if s is a likely member of the filter.
+// If true, s is probably a member; if false, s is definitely not a member.
 func (f *Filter) Test(s string) bool {
 	return f.test(hashString(s))
 }

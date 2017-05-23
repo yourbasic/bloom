@@ -96,11 +96,13 @@ func (f *Filter) add(h1, h2 uint64) bool {
 }
 
 // TestByte tells if b is a likely member of the filter.
+// If true, b is probably a member; if false, b is definitely not a member.
 func (f *Filter) TestByte(b []byte) bool {
 	return f.test(hash(b))
 }
 
 // Test tells if s is a likely member of the filter.
+// If true, s is probably a member; if false, s is definitely not a member.
 func (f *Filter) Test(s string) bool {
 	return f.test(hashString(s))
 }

@@ -7,6 +7,9 @@ import (
 
 const binVer0 = 0
 
+// BUG(korthaj): Filters cannot be moved between little-endian
+// and big-endian machines.
+
 // Data to be included in binary representation of Filter.
 type marshalFilter struct {
 	Version int
@@ -20,6 +23,8 @@ type marshalFilter struct {
 // This method implements the encoding.BinaryMarshaler interface.
 // The packages encoding/gob, encoding/json, and encoding/xml
 // all check for this interface.
+//
+// Filters cannot be moved between little-endian and big-endian machines.
 func (f *Filter) MarshalBinary() ([]byte, error) {
 	mf := marshalFilter{
 		Version: binVer0,

@@ -1,9 +1,6 @@
 package bloom
 
 import (
-	"bytes"
-	"encoding/gob"
-	"reflect"
 	"testing"
 )
 
@@ -140,27 +137,6 @@ func TestUnion(t *testing.T) {
 				t.Errorf("f1.Union(f2).Test(s3) = %v; want true\n", member)
 			}
 		}
-	}
-}
-
-func TestMarshal(t *testing.T) {
-	var network bytes.Buffer
-	f1 := New(10000, 100)
-	f1.Add("Hello, filter!")
-
-	enc := gob.NewEncoder(&network)
-	if err := enc.Encode(f1); err != nil {
-		t.Errorf("Encode->err = %v; want nil\n", err)
-	}
-
-	dec := gob.NewDecoder(&network)
-	var f2 *Filter
-	if err := dec.Decode(&f2); err != nil {
-		t.Errorf("Decode->err = %v; want nil\n", err)
-	}
-
-	if !reflect.DeepEqual(f1, f2) {
-		t.Errorf("Encode(Code(f)) = %v; want %v\n", f1, f2)
 	}
 }
 

@@ -9,6 +9,14 @@
 // a member”. Only false positives can occur: an element that has been added
 // to the filter will always be identified as ”likely member”.
 //
+// The probabilities of different outcomes of a membership test at
+// a false-positives rate of 1/100 are:
+//
+//	Test(s)                 true     false
+//	--------------------------------------
+//	s has been added        1        0
+//	s has not been added    0.01     0.99
+//
 // Elements can be added, but not removed. With more elements in the filter,
 // the probability of false positives increases.
 //

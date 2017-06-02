@@ -20,7 +20,7 @@
 // Elements can be added, but not removed. With more elements in the filter,
 // the probability of false positives increases.
 //
-// Implementation
+// Performance
 //
 // A  full filter with a false-positives rate of 1/p uses roughly
 // 0.26ln(p) bytes per element and performs ⌈1.4ln(p)⌉ bit array lookups
@@ -38,10 +38,16 @@
 //	  512      1.6       9
 //	 1024      1.8      10
 //
-// This implementation is not intended for cryptographic use.
 // Each membership test makes a single call to a 128-bit hash function.
 // This improves speed without increasing the false-positives rate
 // as shown by Kirsch and Mitzenmacher.
+//
+// Limitations
+//
+// This implementation is not intended for cryptographic use.
+//
+// The internal data representation is different for big-endian
+// and little-endian machines.
 //
 package bloom
 

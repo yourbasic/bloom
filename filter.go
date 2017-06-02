@@ -49,6 +49,11 @@
 // The internal data representation is different for big-endian
 // and little-endian machines.
 //
+// Typical use case
+//
+// The Basics example contains a typcial use case:
+// a blacklist of shady websites.
+//
 package bloom
 
 import (

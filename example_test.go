@@ -3,7 +3,6 @@ package bloom_test
 import (
 	"fmt"
 	"github.com/yourbasic/bloom"
-	"math/rand"
 	"strconv"
 )
 
@@ -24,30 +23,6 @@ func Example_basics() {
 		fmt.Println(url, "has not yet been added to our blacklist.")
 	}
 	// Output: https://rascal.com seems to be shady.
-}
-
-// Estimate the number of false positives.
-func Example_falsePositives() {
-	// Create a Bloom filter with room for n elements
-	// at a false-positives rate less than 1/p.
-	n, p := 10000, 100
-	filter := bloom.New(n, p)
-
-	// Add n random strings.
-	for i := 0; i < n; i++ {
-		filter.Add(strconv.Itoa(rand.Int()))
-	}
-
-	// Do n random lookups and count the (mostly accidental) hits.
-	// It shouldn't be much more than n/p, and hopefully less.
-	count := 0
-	for i := 0; i < n; i++ {
-		if filter.Test(strconv.Itoa(rand.Int())) {
-			count++
-		}
-	}
-	fmt.Println(count, "mistakes were made.")
-	// Output: 26 mistakes were made.
 }
 
 // Compute the union of two filters.

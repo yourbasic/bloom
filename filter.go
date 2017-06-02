@@ -9,10 +9,18 @@
 // a member”. Only false positives can occur: an element that has been added
 // to the filter will always be identified as ”likely member”.
 //
+// The probabilities of different outcomes of a membership test at
+// a false-positives rate of 1/100 are:
+//
+//	Test(s)                 true     false
+//	--------------------------------------
+//	s has been added        1        0
+//	s has not been added    0.01     0.99
+//
 // Elements can be added, but not removed. With more elements in the filter,
 // the probability of false positives increases.
 //
-// Implementation
+// Performance
 //
 // A  full filter with a false-positives rate of 1/p uses roughly
 // 0.26ln(p) bytes per element and performs ⌈1.4ln(p)⌉ bit array lookups
@@ -30,10 +38,21 @@
 //	  512      1.6       9
 //	 1024      1.8      10
 //
-// This implementation is not intended for cryptographic use.
 // Each membership test makes a single call to a 128-bit hash function.
 // This improves speed without increasing the false-positives rate
 // as shown by Kirsch and Mitzenmacher.
+//
+// Limitations
+//
+// This implementation is not intended for cryptographic use.
+//
+// The internal data representation is different for big-endian
+// and little-endian machines.
+//
+// Typical use case
+//
+// The Basics example contains a typcial use case:
+// a blacklist of shady websites.
 //
 package bloom
 

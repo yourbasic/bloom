@@ -1,4 +1,4 @@
-// +build !go1.9
+// +build go1.9
 
 // Package bloom provides a Bloom filter implementation.
 //
@@ -60,6 +60,7 @@ package bloom
 
 import (
 	"math"
+	"math/bits"
 )
 
 const (
@@ -165,25 +166,11 @@ func (f1 *Filter) Union(f2 *Filter) *Filter {
 	for i := 0; i < len; i++ {
 		w := f1.data[i] | f2.data[i]
 		res.data[i] = w
-		bitCount += count(w)
+		bitCount += bits.OnesCount64(w)
 	}
 	// Estimate the number of elements from the bitCount.
 	m := 64 * float64(len)
 	n := m / float64(f1.lookups) * math.Log(m/(m-float64(bitCount)))
 	res.count = int64(n)
 	return res
-}
-
-// count returns the number of nonzero bits in w.
-func count(w uint64) int {
-	// Adapted from github.com/yourbasic/bit/funcs.go.
-	const maxw = 1<<64 - 1
-	const bpw = 64
-	w -= (w >> 1) & (maxw / 3)
-	w = w&(maxw/15*3) + (w>>2)&(maxw/15*3)
-	w += w >> 4
-	w &= maxw / 255 * 15
-	w *= maxw / 255
-	w >>= (bpw/8 - 1) * 8
-	return int(w)
 }

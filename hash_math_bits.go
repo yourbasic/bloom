@@ -1,6 +1,8 @@
-// +build !go1.9
+// +build go1.9
 
 package bloom
+
+import "math/bits"
 
 // MurmurHash3 implementation adapted from Sébastien Paolacci
 // github.com/spaolacci/murmur3, released under BSD-3-Clause.
@@ -36,20 +38,20 @@ func hash(b []byte) (h1, h2 uint64) {
 		k1, k2 := uint64byte(b[j:j+8]), uint64byte(b[j+8:j+16])
 
 		k1 *= c1
-		k1 = (k1 << 31) | (k1 >> 33) // rotl64(k1, 31)
+		k1 = bits.RotateLeft64(k1, 31)
 		k1 *= c2
 
 		h1 ^= k1
-		h1 = (h1 << 27) | (h1 >> 37) // rotl64(h1, 27)
+		h1 = bits.RotateLeft64(h1, 27)
 		h1 += h2
 		h1 = h1*5 + 0x52dce729
 
 		k2 *= c2
-		k2 = (k2 << 33) | (k2 >> 31) // rotl64(k2, 33)
+		k2 = bits.RotateLeft64(k2, 33)
 		k2 *= c1
 
 		h2 ^= k2
-		h2 = (h2 << 31) | (h2 >> 33) // rotl64(h2, 31)
+		h2 = bits.RotateLeft64(h2, 31)
 		h2 += h1
 		h2 = h2*5 + 0x38495ab5
 	}
@@ -78,7 +80,7 @@ func hash(b []byte) (h1, h2 uint64) {
 	case 9:
 		k2 ^= uint64(tail[8]) << 0
 		k2 *= c2
-		k2 = (k2 << 33) | (k2 >> 31) // rotl64(k2, 33)
+		k2 = bits.RotateLeft64(k2, 33)
 		k2 *= c1
 		h2 ^= k2
 		fallthrough
@@ -106,7 +108,7 @@ func hash(b []byte) (h1, h2 uint64) {
 	case 1:
 		k1 ^= uint64(tail[0]) << 0
 		k1 *= c1
-		k1 = (k1 << 31) | (k1 >> 33) // rotl64(k1, 31)
+		k1 = bits.RotateLeft64(k1, 31)
 		k1 *= c2
 		h1 ^= k1
 	}
@@ -127,20 +129,20 @@ func hashString(s string) (h1, h2 uint64) {
 		k1, k2 := uint64string(s[j:j+8]), uint64string(s[j+8:j+16])
 
 		k1 *= c1
-		k1 = (k1 << 31) | (k1 >> 33) // rotl64(k1, 31)
+		k1 = bits.RotateLeft64(k1, 31)
 		k1 *= c2
 
 		h1 ^= k1
-		h1 = (h1 << 27) | (h1 >> 37) // rotl64(h1, 27)
+		h1 = bits.RotateLeft64(h1, 27)
 		h1 += h2
 		h1 = h1*5 + 0x52dce729
 
 		k2 *= c2
-		k2 = (k2 << 33) | (k2 >> 31) // rotl64(k2, 33)
+		k2 = bits.RotateLeft64(k2, 33)
 		k2 *= c1
 
 		h2 ^= k2
-		h2 = (h2 << 31) | (h2 >> 33) // rotl64(h2, 31)
+		h2 = bits.RotateLeft64(h2, 31)
 		h2 += h1
 		h2 = h2*5 + 0x38495ab5
 	}
@@ -169,7 +171,7 @@ func hashString(s string) (h1, h2 uint64) {
 	case 9:
 		k2 ^= uint64(tail[8]) << 0
 		k2 *= c2
-		k2 = (k2 << 33) | (k2 >> 31) // rotl64(k2, 33)
+		k2 = bits.RotateLeft64(k2, 33)
 		k2 *= c1
 		h2 ^= k2
 		fallthrough
@@ -197,7 +199,7 @@ func hashString(s string) (h1, h2 uint64) {
 	case 1:
 		k1 ^= uint64(tail[0]) << 0
 		k1 *= c1
-		k1 = (k1 << 31) | (k1 >> 33) // rotl64(k1, 31)
+		k1 = bits.RotateLeft64(k1, 31)
 		k1 *= c2
 		h1 ^= k1
 	}

@@ -2,6 +2,8 @@
 
 ### Golang probabilistic set data structure
 
+[![GoDoc](https://godoc.org/github.com/yourbasic/bloom?status.svg)][godoc-bloom]
+
 A Bloom filter is a fast and space-efficient probabilistic
 data structure used to test set membership. A membership test
 returns either ”likely member” or ”definitely not a member”.
